@@ -93,7 +93,50 @@ app.delete('/delete-product/:id', (req, res) => {
       res.status(200).json(result)
     }
   })
-})
+});
+
+
+// Register
+app.post('/register', (req, res) => {
+  const userName = req.body.userName;
+  const email = req.body.email;
+  const password = req.body.password;
+
+  db.query('INSERT INTO users (userName, email, password) VALUES (?,?,?)', [userName, email, password], (error, result) => {
+    if(error){
+      console.log(error)
+    }
+    else{
+   
+      res.status(200).json(result)
+    }
+  })
+
+});
+
+// Login
+
+app.post('/login', (req, res) => {
+  const userName = req.body.userName;
+  
+  const password = req.body.password;
+
+  db.query('SELECt * FROM users WHERE userName=? AND password=?', [userName, password], (error, result) => {
+    if(error){
+      console.log(error)
+    }
+    else{
+       if(result.length > 0){
+        res.status(200).json({message: 'Login in Successfully', result})
+       }
+       else{
+        res.send({massage: 'USER NOT FOUND'})
+       }
+      
+    }
+  })
+
+});
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
